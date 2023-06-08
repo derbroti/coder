@@ -12,11 +12,6 @@ TEST_CASE("MemCoder Tests", "") {
     uint16_t val;
     MemCoder mc;
 
-    auto REQUIRE_C_A_V = [&](uint64_t C, uint32_t A, uint16_t V) {
-        REQUIRE(C == clk);
-        REQUIRE(A == addr);
-        REQUIRE(V == val);
-    };
     SECTION("Encoding 1") {
         mc.encode(0x1000, 0xFFAA33, 0xf100);
         mc.encode(0x2345, 0x29AA30, 0x112f);
