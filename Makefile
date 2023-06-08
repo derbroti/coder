@@ -15,7 +15,7 @@ CXXFLAGS      = -std=c++20
 CXXFLAGS_TEST = -MMD -MP -ggdb
 
 OBJS_TEST = $(SRCS_TEST:.cpp=.o)
-DEPS_TEST = $(TGT_TEST).d
+DEPS_TEST = $(SRCS_TEST:.cpp=.d)
 DBG_TEST  = $(DEPS_TEST:.d=.dSYM)
 
 CC = g++
