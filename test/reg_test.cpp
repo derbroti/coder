@@ -30,28 +30,28 @@ TEST_CASE("RecCoder Tests", "") {
             two_regs = rc.decode<Coder::destr>(clk, idx2, val2, idx1, val1);
 
             REQUIRE_FALSE(two_regs);
-            REQUIRES(clk, 0x1234567890abcdef, idx2, 0x00, val2, 0x00, idx1, 0x05, val1, 0x34ab);
+            REQUIRES(clk, 0x1234567890abcdefu, idx2, 0x00u, val2, 0x00u, idx1, 0x05u, val1, 0x34abu);
             REQUIRE(rc.num_elements() == 3);
 
             SECTION("Destr. Decoding l2r") {
                 two_regs = rc.decode<Coder::destr>(clk, idx2, val2, idx1, val1);
 
                 REQUIRE_FALSE(two_regs);
-                REQUIRES(clk, 0x00, idx2, 0x00, val2, 0x00, idx1, 0x00, val1, 0x00);
+                REQUIRES(clk, 0x00u, idx2, 0x00u, val2, 0x00u, idx1, 0x00u, val1, 0x00u);
                 REQUIRE(rc.num_elements() == 2);
 
                 SECTION("Destr. Decoding l2r") {
                     two_regs = rc.decode<Coder::destr>(clk, idx2, val2, idx1, val1);
 
                     REQUIRE_FALSE(two_regs);
-                    REQUIRES(clk, 0x00, idx2, 0x00, val2, 0x00, idx1, 0x01, val1, 0x00);
+                    REQUIRES(clk, 0x00u, idx2, 0x00u, val2, 0x00u, idx1, 0x01u, val1, 0x00u);
                     REQUIRE(rc.num_elements() == 1);
 
                     SECTION("Destr. Decoding l2r") {
                         two_regs = rc.decode<Coder::destr>(clk, idx2, val2, idx1, val1);
 
                         REQUIRE_FALSE(two_regs);
-                        REQUIRES(clk, 0x01, idx2, 0x00, val2, 0x00, idx1, 0x00, val1, 0x01);
+                        REQUIRES(clk, 0x01u, idx2, 0x00u, val2, 0x00u, idx1, 0x00u, val1, 0x01u);
                         REQUIRE(rc.num_elements() == 0);
                     }
                 }
@@ -73,27 +73,27 @@ TEST_CASE("RecCoder Tests", "") {
             two_regs = rc.decode<Coder::non_destr, Coder::r2l>(clk, idx2, val2, idx1, val1);
             REQUIRE(two_regs);
             REQUIRE(rc.num_elements() == 3);
-            REQUIRES(clk, 0x00, idx2, 0x1f, val2, 0x00, idx1, 0xf, val1, 0xf12);
+            REQUIRES(clk, 0x00u, idx2, 0x1fu, val2, 0x00u, idx1, 0xfu, val1, 0xf12u);
 
             SECTION("Destr. Decoding l2r") {
                 rc.reset_iter(Coder::l2r);
                 two_regs = rc.decode<Coder::destr>(clk, idx2, val2, idx1, val1);
                 REQUIRE(two_regs);
                 REQUIRE(rc.num_elements() == 2);
-                REQUIRES(clk, 0x234bac4, idx2, 0x12, val2, 0xabcd, idx1, 0x13, val1, 0x1234);
+                REQUIRES(clk, 0x234bac4u, idx2, 0x12u, val2, 0xabcdu, idx1, 0x13u, val1, 0x1234u);
 
                 SECTION("Destr. Decoding r2l") {
                     rc.reset_iter(Coder::r2l);
                     two_regs = rc.decode<Coder::destr, Coder::r2l>(clk, idx2, val2, idx1, val1);
                     REQUIRE(two_regs);
                     REQUIRE(rc.num_elements() == 1);
-                    REQUIRES(clk, 0x00, idx2, 0x1f, val2, 0x00, idx1, 0xf, val1, 0xf12);
+                    REQUIRES(clk, 0x00u, idx2, 0x1fu, val2, 0x00u, idx1, 0xfu, val1, 0xf12u);
 
                     SECTION("Destr. Decoding r2l") {
                         two_regs = rc.decode<Coder::destr, Coder::r2l>(clk, idx2, val2, idx1, val1);
                         REQUIRE(two_regs);
                         REQUIRE(rc.num_elements() == 0);
-                        REQUIRES(clk, 0x12, idx2, 0x1e, val2, 0x25, idx1, 0xe, val1, 0x00);
+                        REQUIRES(clk, 0x12u, idx2, 0x1eu, val2, 0x25u, idx1, 0xeu, val1, 0x00u);
                     }
                 }
             }
@@ -120,27 +120,27 @@ TEST_CASE("RecCoder Tests", "") {
             two_regs = rc.decode<Coder::destr, Coder::r2l>(clk, idx2, val2, idx1, val1);
             REQUIRE_FALSE(two_regs);
             REQUIRE(rc.num_elements() == 5);
-            REQUIRES(clk, 0x2, idx1, 0x1, val1, 0x1);
+            REQUIRES(clk, 0x2u, idx1, 0x1u, val1, 0x1u);
 
             two_regs = rc.decode<Coder::non_destr, Coder::r2l>(clk, idx2, val2, idx1, val1);
             REQUIRE_FALSE(two_regs);
             REQUIRE(rc.num_elements() == 5);
-            REQUIRES(clk, 0x1, idx1, 17, val1, 0xdd);
+            REQUIRES(clk, 0x1u, idx1, 17, val1, 0xddu);
 
             two_regs = rc.decode<Coder::destr, Coder::r2l>(clk, idx2, val2, idx1, val1);
             REQUIRE_FALSE(two_regs);
             REQUIRE(rc.num_elements() == 4);
-            REQUIRES(clk, 0x0, idx1, 21, val1, 0xd00d);
+            REQUIRES(clk, 0x0u, idx1, 21, val1, 0xd00du);
 
             two_regs = rc.decode<Coder::destr, Coder::l2r>(clk, idx2, val2, idx1, val1);
             REQUIRE_FALSE(two_regs);
             REQUIRE(rc.num_elements() == 3);
-            REQUIRES(clk, 0xf343, idx1, 0x11, val1, 0x4456);
+            REQUIRES(clk, 0xf343u, idx1, 0x11u, val1, 0x4456u);
 
             two_regs = rc.decode<Coder::destr, Coder::l2r>(clk, idx2, val2, idx1, val1);
             REQUIRE(two_regs);
             REQUIRE(rc.num_elements() == 2);
-            REQUIRES(clk, 0x12, idx2, 0x10, val2, 0xabcd, idx1, 0x11, val1, 0xef01);
+            REQUIRES(clk, 0x12u, idx2, 0x10u, val2, 0xabcdu, idx1, 0x11u, val1, 0xef01u);
         }
     }
 }

@@ -23,7 +23,7 @@ TEST_CASE("MemCoder Tests", "") {
         SECTION("Destr. Decoding l2r") {
             mc.reset_iter();
             mc.decode<Coder::destr>(clk, addr, val);
-            REQUIRES(clk, 0x1000, addr, 0xFFAA33, val, 0xf100);
+            REQUIRES(clk, 0x1000u, addr, 0xFFAA33u, val, 0xf100u);
 
             REQUIRE(mc.num_elements() == 1);
             REQUIRE(mc.print({0x45,0xc6,0x30,0x54,0x26,0x81,0x2f,0xa2}, true));
@@ -54,11 +54,11 @@ TEST_CASE("MemCoder Tests", "") {
         SECTION("Non-Destr. Decoding l2r") {
             mc.reset_iter();
             mc.decode(clk, addr, val);
-            REQUIRES(clk, 0x00, addr, 0x00, val, 0x12);
+            REQUIRES(clk, 0x00u, addr, 0x00u, val, 0x12u);
             REQUIRE(mc.num_elements() == 2);
 
             mc.decode(clk, addr, val);
-            REQUIRES(clk, 0x424976272733345, addr, 0x80, val, 0x00);
+            REQUIRES(clk, 0x424976272733345u, addr, 0x80u, val, 0x00u);
             REQUIRE(mc.num_elements() == 2);
 
             SECTION("Non-Destr. Decoding l2r - iterator limit") {
@@ -68,11 +68,11 @@ TEST_CASE("MemCoder Tests", "") {
         SECTION("Non-Destr. Decoding r2l") {
             mc.reset_iter();
             mc.decode<Coder::non_destr, Coder::r2l>(clk, addr, val);
-            REQUIRES(clk, 0x424976272733345,addr, 0x80, val, 0x00);
+            REQUIRES(clk, 0x424976272733345u,addr, 0x80u, val, 0x00u);
             REQUIRE(mc.num_elements() == 2);
 
             mc.decode<Coder::non_destr, Coder::r2l>(clk, addr, val);
-            REQUIRES(clk, 0x00, addr, 0x00, val, 0x12);
+            REQUIRES(clk, 0x00u, addr, 0x00u, val, 0x12u);
             REQUIRE(mc.num_elements() == 2);
 
             SECTION("Non-Destr. Decoding r2l - iterator limit") {
