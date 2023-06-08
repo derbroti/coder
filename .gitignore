@@ -2,6 +2,8 @@ catch/
 *.d
 *.dSYM/
 
+test/coder_test
+
 .DS_Store
 ._.DS_Store
 
