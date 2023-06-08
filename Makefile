@@ -36,7 +36,7 @@ $(CATCH_OBJ): $(CATCH_DL)
 	$(CC) -c $< $(CXXFLAGS) -o $@
 
 $(TGT_TEST): $(CATCH_OBJ) $(SRCS_TEST)
-	$(CC) $(SRCS_TEST) $(CATCH_OBJ) $(CXXFLAGS) $(CXXFLAGS_TEST) -o $@
+	$(CC) $(CXXFLAGS) $(CXXFLAGS_TEST) $^ -o $@
 
 clean:
 	$(RM) $(CATCH_OBJ) $(TGT_TEST) $(DEPS_TEST) $(DBG_TEST)
