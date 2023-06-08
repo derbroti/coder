@@ -11,7 +11,9 @@ and 16 bit wide memory, all with unlimited size clock values.
 Build
 #####
 
-Header only library.
+No need to build: header only library in coder.h.
+
+Example usage with dummy CPU (cpu.h) in test/cpu_test.cpp.
 
 To execute the tests, simply run make.
 
