@@ -141,7 +141,6 @@ public:
     }
 
 private:
-    size_t elements = 0;
     const uint8_t mark = 0x80;
     const uint8_t trim = 0x7F;
     std::deque<uint8_t> s;
