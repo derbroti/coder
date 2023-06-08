@@ -8,7 +8,6 @@ When used to store deltas, this coder can be used to track, replay and roll-back
 of 32 and 16 bit integer-registers from a set of up to 255 different registers,
 and 16 bit wide memory, all with unlimited size clock values.
 
-
 Build
 #####
 
@@ -16,12 +15,10 @@ Header only library.
 
 To execute the tests, simply run make.
 
-
 Information
 ###########
 
 Requires C++20.
-
 
 Encoding:
 ---------
@@ -61,5 +58,4 @@ Why this formula? In my case: idx2 is the high-word, idx1 is the low-word
 --------------
 |---- n byte ----|------ n byte -----|----- n byte ------|
 varint_leb128 clk, varint_leb128 addr, varint_leb128 value
-
 
