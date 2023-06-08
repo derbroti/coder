@@ -11,7 +11,7 @@ CATCH_SRC     = $(CATCH_PATH).cpp
 CATCH_OBJ     = $(CATCH_SRC:.cpp=.o)
 CATCH_DL      = $(addprefix $(CATCH_PATH),.cpp .hpp)
 
-CXXFLAGS      = -std=c++20
+CXXFLAGS      = -Wall -Wextra -std=c++20
 CXXFLAGS_TEST = -MMD -MP -ggdb
 
 OBJS_TEST = $(SRCS_TEST:.cpp=.o)
