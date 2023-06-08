@@ -1,0 +1,65 @@
+Coder
+#####
+
+Space conserving (LEB128) CPU data-state (memory: addr+value, register: idx+value) encoder
+(decodable from left-to-right and right-to-left)
+
+When used to store deltas, this coder can be used to track, replay and roll-back all data changes
+of 32 and 16 bit integer-registers from a set of up to 255 different registers,
+and 16 bit wide memory, all with unlimited size clock values.
+
+
+Build
+#####
+
+Header only library.
+
+To execute the tests, simply run make.
+
+
+Information
+###########
+
+Requires C++20.
+
+
+Encoding:
+---------
+
+16 bit register entry:
+----------------------
+
+|----------------------- 1 byte ----------------------------------|--------- n byte ----------|---- n byte -----|
+1bit leb128_marker, 1bit (value & 1), 1bit two_reg=0, 5bit reg_idx, varint_leb128 (value >> 1), varint_leb128 clk
+
+NOTE leb128_marker:
+when reading entries right-to-left, we have to read until we encounter the leb128 marker of the
+following value. To indicate that value ends, we set the MSB of our entries leftmost byte.
+
+NOTE two_reg:
+The only indication that we store 16 or 32 bit wide registers is this bit.
+Depending on its value, we have to decode the following data differently:
+
+
+32 bit register entry:
+----------------------
+
+|------------------------------- 1 byte -----------------------------------|------------------ n byte -------------------|---- n byte -----|
+1bit leb128_decode_marker, 1bit (value1 & 1), 1bit two_reg=1, 5bit reg_idx1, varint_leb128 (value2 << 15) | (value1 >> 1), varint_leb128 clk
+
+NOTE reg_idx2:
+Only idx1 is saved, idx2 has to be calculated:
+
+E.g.:
+reg_idx2 := if  reg_idx1 & (1<<4)  then  reg_idx1-1  else  reg_idx1 | (1<<4)
+
+Why this formula? In my case: idx2 is the high-word, idx1 is the low-word
+(the condition stems from the discrepancy of where PH, PC and SP, FP and OP are placed e.g.:
+(PH=18, PC=19) but (SH=31, SP=15)
+
+16 bit memory:
+--------------
+|---- n byte ----|------ n byte -----|----- n byte ------|
+varint_leb128 clk, varint_leb128 addr, varint_leb128 value
+
+

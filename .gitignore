@@ -1,0 +1,7 @@
+catch/
+*.d
+*.dSYM/
+
+.DS_Store
+._.DS_Store
+
