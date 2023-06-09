@@ -9,6 +9,9 @@
 template <uint8_t mem_bits>
 concept cpu_mem_constraint = mem_bits >= 8 && mem_bits <= 24;
 
+template <bool track>
+concept cpu_needs_tracking = track == true;
+
 // BIG-endian
 template <uint8_t mem_bits = 16, bool track = false>
 requires cpu_mem_constraint<mem_bits>
@@ -28,6 +31,8 @@ public:
         ++clk;
     }
 
+    template <bool tracking = track>
+    requires cpu_needs_tracking<tracking>
     void sync(uint64_t targetClk) {
         while (clk < targetClk) {
             step();
