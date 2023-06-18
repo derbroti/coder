@@ -7,7 +7,7 @@
 #include "coder.h"
 
 template <uint8_t mem_bits>
-concept cpu_mem_constraint = mem_bits >= 8 && mem_bits <= 24;
+concept cpu_mem_constraint = 8 <= mem_bits && mem_bits <= 24;
 
 template <bool track>
 concept cpu_needs_tracking = track == true;
@@ -43,7 +43,6 @@ public:
         }
         lastMemClk = targetClk;
     }
-
     void step_back() {
         uint64_t clkDelta;
         uint32_t addr;

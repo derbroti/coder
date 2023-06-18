@@ -50,18 +50,20 @@
 //
 //
 
-#include <deque>
 #include <algorithm>
+#include <deque>
 #include <iostream>
 
 using std::cout, std::endl;
 
-#define TWO_REG_BIT (1<<5)
+#define TWO_REG_BIT (1 << 5)
 
 class Coder {
 public:
-    enum dir_t {l2r, r2l};
-    enum destr_t {non_destr, destr};
+    enum dir_t { l2r, r2l };
+    enum destr_t { non_destr, destr };
+
+    Coder(): s_it(s.begin()), s_rit(s.rbegin()) {}
 
     void reset_iter(dir_t dir) {
         if (dir == l2r)
@@ -75,7 +77,7 @@ public:
     }
 
     bool print(std::deque<uint8_t> cmp = {}, bool silent = false) {
-        if (!silent) {
+        if (! silent) {
             cout << std::hex;
             std::ranges::copy(s, std::ostream_iterator<int>(std::cout, " "));
             cout << std::dec << endl;
@@ -102,34 +104,39 @@ public:
 
     template <destr_t U, dir_t V, typename W>
     void _decode(W& value) {
-        if (!is_valid<V>()) return;
+        if (! is_valid<V>())
+            return;
 
         if constexpr (V == l2r) {
             uint8_t cnt = 0;
-            value = 0;
+            value       = 0;
 
-            while (!(*s_it & mark)) {
+            while (! (*s_it & mark)) {
                 value |= ((W)(*s_it & trim) << cnt);
-                cnt += 7;
-                if (!advance<U, V>(s_it)) break;
+                cnt   += 7;
+                if (! advance<U, V>(s_it))
+                    break;
             }
             value |= ((W)(*s_it & trim)) << cnt;
             advance<U, V>(s_it);
         } else {
             value = *s_rit & trim;
-            if (!advance<U, V>(s_rit)) return;
+            if (! advance<U, V>(s_rit))
+                return;
 
-            while (!(*s_rit & mark)) {
+            while (! (*s_rit & mark)) {
                 value <<= 7;
                 value |= *s_rit;
-                if (!advance<U, V>(s_rit)) break;
+                if (! advance<U, V>(s_rit))
+                    break;
             }
         }
     }
 
     template <destr_t U, dir_t V>
     void _decode_raw(uint8_t& val) {
-        if (!is_valid<V>()) return;
+        if (! is_valid<V>())
+            return;
 
         if constexpr (V == Coder::l2r) {
             val = *s_it;
@@ -143,9 +150,10 @@ public:
 private:
     const uint8_t mark = 0x80;
     const uint8_t trim = 0x7F;
-    std::deque<uint8_t> s;
-    std::deque<uint8_t>::iterator s_it = s.begin();
-    std::deque<uint8_t>::reverse_iterator s_rit = s.rbegin();
+
+    std::deque<uint8_t>                   s;
+    std::deque<uint8_t>::iterator         s_it;
+    std::deque<uint8_t>::reverse_iterator s_rit;
 
     template <dir_t V>
     bool is_valid() {
@@ -168,7 +176,6 @@ private:
     }
 };
 
-
 class MemCoder : public Coder {
 public:
     template <typename T>
@@ -182,7 +189,7 @@ public:
     template <Coder::destr_t U = Coder::non_destr, Coder::dir_t V = Coder::l2r, typename W>
     void decode(W& clk, uint32_t& addr, uint16_t& val) {
         if constexpr (U == Coder::destr) {
-           if (get_size())
+            if (get_size())
                 --elements;
         }
         if constexpr (V == Coder::l2r) {
@@ -194,7 +201,7 @@ public:
             _decode<U, V>(addr);
             _decode<U, V>(clk);
         }
-   }
+    }
 
     size_t num_elements() {
         return elements;
@@ -223,20 +230,20 @@ public:
 
     template <Coder::destr_t U = Coder::non_destr, Coder::dir_t V = Coder::l2r, typename W>
     bool decode(W& clk, uint8_t& idx2, uint16_t& high_value, uint8_t& idx1, uint16_t& low_value) {
-        uint32_t tmp_value = 0;
-        uint8_t raw;
-        bool two_regs = false;
-        idx2 = 0;
+        uint8_t  raw;
+        uint32_t tmp_value;
+        bool     two_regs = false;
 
         if constexpr (U == Coder::destr) {
-           if (get_size())
+            if (get_size())
                 --elements;
         }
         if constexpr (V == Coder::l2r) {
             _decode_raw<U, V>(raw);
+
             uint8_t value_LSB = (raw >> 6) & 1;
-            idx1 = raw & 0x1F;
-            two_regs = (raw >> 5) & 1;
+            idx1              = raw & 0x1F;
+            two_regs          = (raw >> 5) & 1;
 
             _decode<U, V>(tmp_value);
             tmp_value = ((tmp_value) << 1) | value_LSB;
@@ -246,13 +253,15 @@ public:
             _decode<U, V>(tmp_value);
             _decode_raw<U, V>(raw);
 
-            idx1 = raw & 0x1F;
-            tmp_value = ((tmp_value) << 1) | ((raw >> 6) & 1);
-            two_regs = (raw >> 5) & 1;
+            uint8_t value_LSB = (raw >> 6) & 1;
+            idx1              = raw & 0x1F;
+            tmp_value         = ((tmp_value) << 1) | value_LSB;
+            two_regs          = (raw >> 5) & 1;
         }
-        low_value = tmp_value & 0xFFFF;
+        low_value  = tmp_value & 0xFFFF;
         high_value = tmp_value >> 16;
 
+        idx2 = 0;
         if (two_regs)
             idx2 = decode_idx2(idx1);
 
@@ -274,9 +283,9 @@ private:
     void reg_encode(T clk, uint8_t idx, uint16_t high_value, uint16_t low_value) {
         idx |= 0x80;                 //bit7 := 1 // leb128 decode marker
         idx |= (low_value & 1) << 6; //bit6 := value & 1
-        if constexpr(two)
+        if constexpr (two)           //
             idx |= TWO_REG_BIT;      //bit5 := 1
-        else
+        else                         //
             idx &= ~TWO_REG_BIT;     //bit5 := 0
         _encode_raw(idx);
 
@@ -285,4 +294,3 @@ private:
         ++elements;
     }
 };
-
